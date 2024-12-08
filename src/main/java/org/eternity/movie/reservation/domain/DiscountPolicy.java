@@ -3,11 +3,9 @@ package org.eternity.movie.reservation.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.eternity.movie.generic.Money;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -18,16 +16,17 @@ public abstract class DiscountPolicy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "policy")
-    private Collection<DiscountCondition> conditions = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="POLICY_ID")
+    private Set<DiscountCondition> conditions = new HashSet<>();
 
-    public DiscountPolicy(Set<DiscountCondition> conditions) {
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "POLICY_PRICES", joinColumns = @JoinColumn(name="POLICY_ID"))
+    private Set<Money> prices = new HashSet<>();
+
+    public DiscountPolicy(Set<DiscountCondition> conditions,
+                          Set<Money> prices) {
         this.conditions = conditions;
-        this.conditions.forEach(condition -> condition.setDiscountPolicy(this));
-    }
-
-    public void addDiscountCondition(DiscountCondition condition) {
-        this.conditions.add(condition);
-        condition.setDiscountPolicy(this);
+        this.prices = prices;
     }
 }

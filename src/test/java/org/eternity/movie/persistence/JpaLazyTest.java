@@ -1,6 +1,7 @@
 package org.eternity.movie.persistence;
 
 import jakarta.persistence.EntityManager;
+import org.eternity.movie.generic.Money;
 import org.eternity.movie.reservation.domain.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,13 @@ public class JpaLazyTest {
 	public void add_discount_condition() {
 		DiscountPolicy policy =
 				new PercentDiscountPolicy(0.1,
-					Set.of(new SequenceCondition(1)));
+					Set.of(new SequenceCondition(1)),
+					Set.of(Money.wons(1000)));
 		em.persist(policy);
 		em.flush();
 		em.clear();
 
 		DiscountPolicy loadedPolicy = em.find(DiscountPolicy.class, policy.getId());
-		loadedPolicy.addDiscountCondition(new SequenceCondition(2));
 		em.flush();
 	}
 }

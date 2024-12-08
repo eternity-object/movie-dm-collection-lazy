@@ -4,6 +4,7 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.eternity.movie.generic.Money;
 
 import java.util.Set;
 
@@ -13,8 +14,10 @@ import java.util.Set;
 public class PercentDiscountPolicy extends DiscountPolicy {
     private double percent;
 
-    public PercentDiscountPolicy(double percent, Set<DiscountCondition> conditions) {
-        super(conditions);
+    public PercentDiscountPolicy(double percent,
+                                 Set<DiscountCondition> conditions,
+                                 Set<Money> prices) {
+        super(conditions, prices);
         this.percent = percent;
     }
 }
