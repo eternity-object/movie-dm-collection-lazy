@@ -18,7 +18,7 @@ public abstract class DiscountPolicy {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name="POLICY_ID")
-    private Set<DiscountCondition> conditions = new HashSet<>();
+    private Collection<DiscountCondition> conditions = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "POLICY_PRICES", joinColumns = @JoinColumn(name="POLICY_ID"))
