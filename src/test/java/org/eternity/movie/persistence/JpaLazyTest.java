@@ -18,16 +18,13 @@ public class JpaLazyTest {
 
 	@Test
 	public void add_discount_condition() {
-		DiscountPolicy policy =
-				new AmountDiscountPolicy(Money.wons(1000),
-					Set.of(new PeriodCondition(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(11, 0)),
-							new SequenceCondition(1),
-							new SequenceCondition(3)),
-					Set.of(Money.wons(1000), Money.wons(200), Money.wons(300)));
+		DiscountPolicy policy = new PercentDiscountPolicy(0.1, Set.of(new SequenceCondition(1)));
 		em.persist(policy);
 		em.flush();
 		em.clear();
 
-		em.find(DiscountPolicy.class, policy.getId());
+		DiscountPolicy loadedPolicy = em.find(DiscountPolicy.class, policy.getId());
+		loadedPolicy.addDiscountCondition(new SequenceCondition(2));
+		em.flush();
 	}
 }

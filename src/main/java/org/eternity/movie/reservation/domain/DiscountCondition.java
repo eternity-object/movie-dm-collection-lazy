@@ -9,4 +9,12 @@ public abstract class DiscountCondition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name="POLICY_ID")
+    private DiscountPolicy policy;
+
+    public void setDiscountPolicy(DiscountPolicy policy) {
+        this.policy = policy;
+    }
 }

@@ -15,9 +15,8 @@ public class PercentDiscountPolicy extends DiscountPolicy {
     private double percent;
 
     public PercentDiscountPolicy(double percent,
-                                 Set<DiscountCondition> conditions,
-                                 Set<Money> prices) {
-        super(conditions, prices);
+                                 Set<DiscountCondition> conditions) {
+        super(conditions);
         this.percent = percent;
     }
 }

@@ -16,17 +16,16 @@ public abstract class DiscountPolicy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="POLICY_ID")
-    private Set<DiscountCondition> conditions = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "policy")
+    private Collection<DiscountCondition> conditions = new ArrayList<>();
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "POLICY_PRICES", joinColumns = @JoinColumn(name="POLICY_ID"))
-    private Set<Money> prices = new HashSet<>();
-
-    public DiscountPolicy(Set<DiscountCondition> conditions,
-                          Set<Money> prices) {
+    public DiscountPolicy(Set<DiscountCondition> conditions) {
         this.conditions = conditions;
-        this.prices = prices;
+        this.conditions.forEach(condition -> condition.setDiscountPolicy(this));
+    }
+
+    public void addDiscountCondition(DiscountCondition condition) {
+        this.conditions.add(condition);
+        condition.setDiscountPolicy(this);
     }
 }
