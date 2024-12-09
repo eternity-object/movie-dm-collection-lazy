@@ -9,10 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(showSql = false)
 public class JpaLazyTest {
@@ -22,14 +19,15 @@ public class JpaLazyTest {
 	@Test
 	public void add_discount_condition() {
 		DiscountPolicy policy =
-				new PercentDiscountPolicy(0.1,
-					Set.of(new SequenceCondition(1)),
-					Set.of(Money.wons(1000)));
+				new AmountDiscountPolicy(Money.wons(1000),
+					Set.of(new PeriodCondition(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(11, 0)),
+							new SequenceCondition(1),
+							new SequenceCondition(3)),
+					Set.of(Money.wons(1000), Money.wons(200), Money.wons(300)));
 		em.persist(policy);
 		em.flush();
 		em.clear();
 
-		DiscountPolicy loadedPolicy = em.find(DiscountPolicy.class, policy.getId());
-		em.flush();
+		em.find(DiscountPolicy.class, policy.getId());
 	}
 }
